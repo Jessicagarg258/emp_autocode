@@ -1,0 +1,16 @@
+use auth;
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL ,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL
+);
+show tables;
+drop table Users;
+select * from users;
+SELECT username, role FROM Users WHERE username = 'admin1';
+ALTER TABLE Users ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'user';
