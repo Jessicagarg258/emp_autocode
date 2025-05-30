@@ -1,0 +1,191 @@
+Create database proj;
+
+use proj;
+
+CREATE TABLE Employee (
+    Emp_Id INT PRIMARY KEY,
+    First_Name VARCHAR(200) NOT NULL,
+    Last_Name VARCHAR(200) NOT NULL,
+    Dept_Id INT, 
+    Email_Id VARCHAR(200) UNIQUE NOT NULL,
+    DOB DATE,
+    Role_Id INT,
+    FOREIGN KEY (Dept_Id) REFERENCES Department(Dept_Id),
+    FOREIGN KEY (Role_Id) REFERENCES Role(Role_Id)
+);
+
+CREATE TABLE Department (
+    Dept_Id INT PRIMARY KEY,
+    Dept_Name VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE Role (
+    Role_Id INT PRIMARY KEY,
+    Role_Name VARCHAR(200) NOT NULL,
+    Access_Level VARCHAR(100)
+);
+
+CREATE TABLE Salary (
+    Salary_Id INT PRIMARY KEY,
+    Emp_Id INT,
+    Sal_Basic DECIMAL(10,2) NOT NULL,
+    Bonus DECIMAL(10,2),
+    Total_CTC DECIMAL(10,2) NOT NULL,
+    Last_Updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (Emp_Id) REFERENCES Employee(Emp_Id)
+);
+
+CREATE TABLE Emp_Address (
+    Address_Id INT PRIMARY KEY,
+    Emp_Id INT NOT NULL,
+    Address_Type ENUM('Permanent', 'Current') NOT NULL,
+    Address_Line1 VARCHAR(200),
+    Address_Line2 VARCHAR(200),
+    City VARCHAR(100),
+    State VARCHAR(100),
+    Country VARCHAR(100),
+    Postal_Code VARCHAR(100),
+    FOREIGN KEY (Emp_Id) REFERENCES Employee(Emp_Id)
+);
+
+
+
+
+INSERT INTO Employee (Emp_Id, First_Name, Last_Name, Dept_Id, Email_Id, DOB, Role_Id)
+VALUES
+(1, 'Arjun', 'Patel', 101, 'arjun.patel@gmail.com', '1985-06-15', 40),
+(2, 'Priya', 'Sharma', 102, 'priya.sharma@gmail.com', '1990-08-22', 30),
+(3, 'Ravi', 'Iyer', 103, 'ravi.iyer@yahoo.com', '1982-01-10', 20),
+(4, 'Geeta', 'Reddy', 101, 'geeta.reddy@hotmail.com', '1995-03-05', 40),
+(5, 'Vikram', 'Singh', 104, 'vikram.singh@gmail.com', '1988-11-30', 10),
+(6, 'Ram', 'Gupta', 105, 'ram.gupta@gmail.com', '1998-1-20', 50);
+
+
+INSERT INTO Department (Dept_Id, Dept_Name)
+VALUES
+(101, 'HR'),
+(102, 'Finance'),
+(103, 'IT'),
+(104, 'Marketing'),
+(105, 'Sales');
+
+
+
+INSERT INTO Role (Role_Id, Role_Name, Access_Level)
+VALUES
+(10, 'Manager', 'Admin'),
+(20, 'Developer', 'User'),
+(30, 'Analyst', 'User'),
+(40, 'HR Specialist', 'Viewer'),
+(50, 'Sales Executive', 'Viewer');
+
+
+INSERT INTO Salary (Salary_Id, Emp_Id, Sal_Basic, Bonus, Total_CTC)
+VALUES
+(1, 1, 50000.00, 5000.00, 55000.00),  
+(2, 2, 70000.00, 7000.00, 77000.00),  
+(3, 3, 80000.00, 8000.00, 88000.00),  
+(4, 4, 40000.00, 4000.00, 44000.00),  
+(5, 5, 50000.00, 2000.00, 52000.00),
+(6, 6, 30000.00, 4000.00, 34000.00)
+;  
+
+
+
+
+INSERT INTO Emp_Address (Address_Id, Emp_Id, Address_Type, Address_Line1, Address_Line2, City, State, Country, Postal_Code)
+VALUES
+(1, 1, 'Permanent', '123, MG Road', 'Near City Mall', 'Mumbai', 'Maharashtra', 'India', '400001'),  
+(2, 1, 'Current', '456, Andheri East', 'Building A, Flat 101', 'Mumbai', 'Maharashtra', 'India', '400093'),
+(3, 2, 'Permanent', '10, Shankar Street', 'Flat 202', 'Delhi', 'Delhi', 'India', '110001'), 
+(4, 3, 'Current', '24, Connaught Place', 'Apartment 3B', 'Delhi', 'Delhi', 'India', '110002'), 
+(5, 4, 'Permanent', '789, Nehru Nagar', 'Near IT Park', 'Bangalore', 'Karnataka', 'India', '560001'), 
+(6, 5, 'Current', '101, Sector 12', 'Block B', 'Noida', 'Uttar Pradesh', 'India', '201301'),
+(7, 6, 'Permanent', '10, Indira Nagar', 'Street 3, House No. 12', 'Hyderabad', 'Telangana', 'India', '500062'),  
+(8, 6, 'Current', '55, Jubilee Hills', 'Flat 202', 'Hyderabad', 'Telangana', 'India', '500033');
+
+
+
+select * from Employee;
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Jessica@52';
+FLUSH PRIVILEGES;
+
+
+
+show tables;
+
+ALTER TABLE salary DROP PRIMARY KEY,MODIFY COLUMN Salary_Id INT NOT NULL AUTO_INCREMENT,ADD PRIMARY KEY (Salary_Id);
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE emp_address DROP PRIMARY KEY,MODIFY COLUMN Address_Id INT NOT NULL AUTO_INCREMENT,ADD PRIMARY KEY (Address_Id);
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE employee DROP FOREIGN KEY employee_ibfk_2;
+
+ALTER TABLE employee MODIFY COLUMN Role_Id INT NULL;
+
+ALTER TABLE role DROP PRIMARY KEY,MODIFY COLUMN role_Id INT NOT NULL AUTO_INCREMENT,ADD PRIMARY KEY (role_Id);
+
+ALTER TABLE employee ADD CONSTRAINT employee_ibfk_2 FOREIGN KEY (Role_Id) REFERENCES role(Role_Id);
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE employee DROP FOREIGN KEY employee_ibfk_1;
+
+ALTER TABLE employee MODIFY COLUMN Dept_Id INT NULL;
+
+ALTER TABLE department DROP PRIMARY KEY,MODIFY COLUMN Dept_Id INT NOT NULL AUTO_INCREMENT,ADD PRIMARY KEY (Dept_Id);
+
+ALTER TABLE employee ADD CONSTRAINT employee_ibfk_1 FOREIGN KEY (Dept_Id) REFERENCES department(Dept_Id);
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ALTER TABLE salary DROP FOREIGN KEY salary_ibfk_1;
+
+ALTER TABLE salary MODIFY COLUMN Emp_Id INT NULL;
+
+ALTER TABLE emp_address DROP FOREIGN KEY emp_address_ibfk_1;
+
+ALTER TABLE emp_address MODIFY COLUMN Emp_Id INT NULL;
+
+ALTER TABLE employee DROP PRIMARY KEY,MODIFY COLUMN emp_Id INT NOT NULL AUTO_INCREMENT,ADD PRIMARY KEY (emp_Id);
+
+ALTER TABLE salary ADD CONSTRAINT salary_ibfk_1 FOREIGN KEY (Emp_Id) REFERENCES employee(Emp_Id);
+
+ALTER TABLE emp_address ADD CONSTRAINT emp_address_ibfk_1 FOREIGN KEY (Emp_Id) REFERENCES employee(Emp_Id);
+
+
+create database auth;use auth;
+
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL
+);
+ 
+ desc Users;
+ 
+ 
+ ALTER TABLE Employee DROP FOREIGN KEY Employee_ibfk_1;
+ALTER TABLE Employee 
+ADD CONSTRAINT fk_employee_dept 
+FOREIGN KEY (Dept_Id) REFERENCES Department(Dept_Id) ON DELETE CASCADE;
+
+
+ALTER TABLE Employee DROP FOREIGN KEY Employee_ibfk_2;
+ALTER TABLE Employee 
+ADD CONSTRAINT fk_employee_role 
+FOREIGN KEY (Role_Id) REFERENCES Role(Role_Id) ON DELETE CASCADE;
+
+
+ALTER TABLE Salary DROP FOREIGN KEY Salary_ibfk_1;
+ALTER TABLE Salary 
+ADD CONSTRAINT fk_salary_employee 
+FOREIGN KEY (Emp_Id) REFERENCES Employee(Emp_Id) ON DELETE CASCADE;
+
+
+ALTER TABLE Emp_Address DROP FOREIGN KEY Emp_Address_ibfk_1;
+ALTER TABLE Emp_Address 
+ADD CONSTRAINT fk_address_employee 
+FOREIGN KEY (Emp_Id) REFERENCES Employee(Emp_Id) ON DELETE CASCADE;
+select * from laptop;
+show tables;
